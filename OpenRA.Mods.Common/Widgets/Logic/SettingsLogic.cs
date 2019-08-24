@@ -27,6 +27,7 @@ namespace OpenRA.Mods.Common.Widgets.Logic
 		static readonly int2 OriginalGraphicsWindowedSize;
 		static readonly int2 OriginalGraphicsFullscreenSize;
 		static readonly bool OriginalServerDiscoverNatDevices;
+		static readonly bool OriginalScaleUI;
 
 		readonly Dictionary<PanelType, Action> leavePanelActions = new Dictionary<PanelType, Action>();
 		readonly Dictionary<PanelType, Action> resetPanelActions = new Dictionary<PanelType, Action>();
@@ -53,6 +54,7 @@ namespace OpenRA.Mods.Common.Widgets.Logic
 			OriginalGraphicsWindowedSize = original.Graphics.WindowedSize;
 			OriginalGraphicsFullscreenSize = original.Graphics.FullscreenSize;
 			OriginalServerDiscoverNatDevices = original.Server.DiscoverNatDevices;
+			OriginalScaleUI = original.Graphics.ScaleUI;
 		}
 
 		[ObjectCreator.UseCtor]
@@ -82,7 +84,8 @@ namespace OpenRA.Mods.Common.Widgets.Logic
 				    current.Graphics.Mode != OriginalGraphicsMode ||
 				    current.Graphics.WindowedSize != OriginalGraphicsWindowedSize ||
 					current.Graphics.FullscreenSize != OriginalGraphicsFullscreenSize ||
-					current.Server.DiscoverNatDevices != OriginalServerDiscoverNatDevices)
+					current.Server.DiscoverNatDevices != OriginalServerDiscoverNatDevices ||
+					current.Graphics.ScaleUI != OriginalScaleUI)
 				{
 					Action restart = () =>
 					{
@@ -196,6 +199,8 @@ namespace OpenRA.Mods.Common.Widgets.Logic
 			BindCheckboxPref(panel, "CURSORDOUBLE_CHECKBOX", ds, "CursorDouble");
 			BindCheckboxPref(panel, "FRAME_LIMIT_CHECKBOX", ds, "CapFramerate");
 			BindCheckboxPref(panel, "PLAYER_STANCE_COLORS_CHECKBOX", gs, "UsePlayerStanceColors");
+			BindCheckboxPref(panel, "SCALE_UI_CHECKBOX", ds, "ScaleUI");
+			BindCheckboxPref(panel, "SCROLL_LIMIT_CHECKBOX", gs, "ViewportLimitScroll");
 
 			var languageDropDownButton = panel.Get<DropDownButtonWidget>("LANGUAGE_DROPDOWNBUTTON");
 			languageDropDownButton.OnMouseDown = _ => ShowLanguageDropdown(languageDropDownButton, modData.Languages);
@@ -231,6 +236,10 @@ namespace OpenRA.Mods.Common.Widgets.Logic
 
 			var cursorDoubleIsChecked = cursorDoubleCheckbox.IsChecked;
 			cursorDoubleCheckbox.IsChecked = () => !cursorDoubleCheckbox.IsDisabled() && cursorDoubleIsChecked();
+
+			var uiScaleCheckbox = panel.Get<CheckboxWidget>("SCALE_UI_CHECKBOX");
+			var uiScaleIsChecked = uiScaleCheckbox.IsChecked;
+			uiScaleCheckbox.IsChecked = () => ds.ScaleUI;
 
 			panel.Get("WINDOW_RESOLUTION").IsVisible = () => ds.Mode == WindowMode.Windowed;
 			var windowWidth = panel.Get<TextFieldWidget>("WINDOW_WIDTH");

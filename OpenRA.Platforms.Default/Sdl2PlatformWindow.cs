@@ -140,37 +140,48 @@ namespace OpenRA.Platforms.Default
 				}
 
 				surfaceSize = windowSize;
-				windowScale = 1;
+				if (Game.Settings.Graphics.ScaleUI)
+					windowScale = 1.33f;
+				else
+					windowScale = 1.0f;
 
-				// Enable high resolution rendering for Retina displays
-				if (Platform.CurrentPlatform == PlatformType.OSX)
-				{
-					// OSX defines the window size in "points", with a device-dependent number of pixels per point.
-					// The window scale is simply the ratio of GL pixels / window points.
-					int width, height;
 
-					SDL.SDL_GL_GetDrawableSize(Window, out width, out height);
-					surfaceSize = new Size(width, height);
-					windowScale = width * 1f / windowSize.Width;
-				}
-				else if (Platform.CurrentPlatform == PlatformType.Windows)
+				if (windowScale == 1) // no ScaleUI set
 				{
-					float ddpi, hdpi, vdpi;
-					if (!Game.Settings.Graphics.DisableWindowsDPIScaling && SDL.SDL_GetDisplayDPI(0, out ddpi, out hdpi, out vdpi) == 0)
+					// Enable high resolution rendering for Retina displays
+					if (Platform.CurrentPlatform == PlatformType.OSX)
 					{
-						windowScale = ddpi / 96;
-						windowSize = new Size((int)(surfaceSize.Width / windowScale), (int)(surfaceSize.Height / windowScale));
+						// OSX defines the window size in "points", with a device-dependent number of pixels per point.
+						// The window scale is simply the ratio of GL pixels / window points.
+						int width, height;
+
+						SDL.SDL_GL_GetDrawableSize(Window, out width, out height);
+						surfaceSize = new Size(width, height);
+						windowScale = width * 1f / windowSize.Width;
+					}
+					else if (Platform.CurrentPlatform == PlatformType.Windows)
+					{
+						float ddpi, hdpi, vdpi;
+						if (!Game.Settings.Graphics.DisableWindowsDPIScaling && SDL.SDL_GetDisplayDPI(0, out ddpi, out hdpi, out vdpi) == 0)
+						{
+							windowScale = ddpi / 96;
+							windowSize = new Size((int)(surfaceSize.Width / windowScale), (int)(surfaceSize.Height / windowScale));
+						}
+					}
+					else
+					{
+						float scale = 1;
+						var scaleVariable = Environment.GetEnvironmentVariable("OPENRA_DISPLAY_SCALE");
+						if (scaleVariable != null && float.TryParse(scaleVariable, out scale))
+						{
+							windowScale = scale;
+							windowSize = new Size((int)(surfaceSize.Width / windowScale), (int)(surfaceSize.Height / windowScale));
+						}
 					}
 				}
 				else
 				{
-					float scale = 1;
-					var scaleVariable = Environment.GetEnvironmentVariable("OPENRA_DISPLAY_SCALE");
-					if (scaleVariable != null && float.TryParse(scaleVariable, out scale))
-					{
-						windowScale = scale;
-						windowSize = new Size((int)(surfaceSize.Width / windowScale), (int)(surfaceSize.Height / windowScale));
-					}
+					windowSize = new Size((int)(surfaceSize.Width / windowScale), (int)(surfaceSize.Height / windowScale));
 				}
 
 				Console.WriteLine("Using window scale {0:F2}", windowScale);

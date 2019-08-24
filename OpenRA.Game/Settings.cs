@@ -143,6 +143,8 @@ namespace OpenRA
 		[Desc("Screen resolution in windowed mode.")]
 		public int2 WindowedSize = new int2(1024, 768);
 
+		public bool ScaleUI = true;
+
 		public bool HardwareCursors = true;
 
 		public bool PixelDouble = false;
@@ -197,6 +199,7 @@ namespace OpenRA
 
 		public bool ViewportEdgeScroll = true;
 		public int ViewportEdgeScrollMargin = 5;
+		public bool ViewportLimitScroll = false;
 
 		public bool LockMouseWindow = false;
 		public MouseScrollType MiddleMouseScroll = MouseScrollType.Standard;

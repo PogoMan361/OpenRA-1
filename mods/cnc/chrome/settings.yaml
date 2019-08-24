@@ -79,22 +79,29 @@ Container@SETTINGS_PANEL:
 							Font: Bold
 							Text: Display
 							Align: Center
+						Checkbox@SCALE_UI_CHECKBOX:
+							X: 15
+							Y: 41
+							Width: 170
+							Height: 20
+							Font: Regular
+							Text: Upscale Interface
 						Label@MODE_LABEL:
-							X: 110
+							X: 190
 							Y: 40
 							Width: 45
 							Height: 25
 							Align: Right
 							Text: Mode:
 						DropDownButton@MODE_DROPDOWN:
-							X: 160
+							X: 240
 							Y: 40
 							Width: 170
 							Height: 25
 							Font: Regular
 							Text: Windowed
 						Container@WINDOW_RESOLUTION:
-							X: 330
+							X: 410
 							Y: 40
 							Children:
 								Label@At:
@@ -159,6 +166,13 @@ Container@SETTINGS_PANEL:
 							Height: 20
 							Font: Regular
 							Text: Also Double Cursor
+						Checkbox@SCROLL_LIMIT_CHECKBOX:
+							X: 15
+							Y: 241
+							Width: 200
+							Height: 20
+							Font: Regular
+							Text: Enable limited scrolling
 						Label@FRAME_LIMIT_DESC_A:
 							X: 45
 							Y: 153

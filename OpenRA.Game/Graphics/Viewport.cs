@@ -54,15 +54,14 @@ namespace OpenRA.Graphics
 
 		ProjectedCellRegion allCells;
 		bool allCellsDirty = true;
-		readonly float[] availableZoomSteps = new[] { 2f, 1f, 0.5f, 0.25f };
-
+		// readonly float[] availableZoomSteps = new[] { 2f, 1f, 0.5f, 0.25f };
+		readonly float[] availableZoomSteps = new[] { 2f, 1.9f, 1.8f, 1.7f, 1.6f, 1.5f, 1.4f, 1.3f, 1.2f, 1.1f, 1.0f, 0.9f, 0.8f, 0.7f, 0.6f };
 		float zoom = 1f;
 
 		public float[] AvailableZoomSteps
 		{
 			get { return availableZoomSteps; }
 		}
-
 		public float Zoom
 		{
 			get
@@ -75,6 +74,10 @@ namespace OpenRA.Graphics
 				var newValue = ClosestTo(AvailableZoomSteps, value);
 				zoom = newValue;
 				viewportSize = (1f / zoom * new float2(Game.Renderer.Resolution)).ToInt2();
+				if (Game.Settings.Game.ViewportLimitScroll)
+					CenterLocation = CenterLocation.Clamp(new Rectangle(mapBounds.X + viewportSize.X / 2, mapBounds.Y + viewportSize.Y / 2, mapBounds.Width - (int)(0.8f * viewportSize.X), mapBounds.Height - viewportSize.Y));
+				else
+					CenterLocation = CenterLocation.Clamp(mapBounds);
 				cellsDirty = true;
 				allCellsDirty = true;
 			}
@@ -222,7 +225,10 @@ namespace OpenRA.Graphics
 
 		public void Center(WPos pos)
 		{
-			CenterLocation = worldRenderer.ScreenPxPosition(pos).Clamp(mapBounds);
+			if (Game.Settings.Game.ViewportLimitScroll)
+				CenterLocation = worldRenderer.ScreenPxPosition(pos).Clamp(new Rectangle(mapBounds.X + viewportSize.X / 2, mapBounds.Y + viewportSize.Y / 2, mapBounds.Width - (int)(0.8f * viewportSize.X), mapBounds.Height - viewportSize.Y));
+			else
+				CenterLocation = worldRenderer.ScreenPxPosition(pos).Clamp(mapBounds);
 			cellsDirty = true;
 			allCellsDirty = true;
 		}
@@ -235,7 +241,12 @@ namespace OpenRA.Graphics
 			allCellsDirty = true;
 
 			if (!ignoreBorders)
-				CenterLocation = CenterLocation.Clamp(mapBounds);
+			{
+				if (Game.Settings.Game.ViewportLimitScroll)
+					CenterLocation = CenterLocation.Clamp(new Rectangle(mapBounds.X + viewportSize.X / 2, mapBounds.Y + viewportSize.Y / 2, mapBounds.Width - (int)(0.8f * viewportSize.X), mapBounds.Height - viewportSize.Y));
+				else
+					CenterLocation = CenterLocation.Clamp(mapBounds);
+			}
 		}
 
 		// Rectangle (in viewport coords) that contains things to be drawn

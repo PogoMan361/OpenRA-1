@@ -21,7 +21,7 @@ namespace OpenRA.Mods.Common.Widgets
 	{
 		public Hotkey CancelKey = new Hotkey(Keycode.ESCAPE, Modifiers.None);
 		public float AspectRatio = 1.2f;
-		public bool DrawOverlay = true;
+		public bool DrawOverlay = false;
 		public bool Skippable = true;
 
 		public bool Paused { get { return paused; } }
