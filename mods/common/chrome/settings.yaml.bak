@@ -139,7 +139,7 @@ Background@SETTINGS_PANEL:
 							MaxLength: 5
 							Type: Integer
 				Checkbox@SCALE_UI_CHECKBOX:
-					X: 100
+					X: 15
 					Y: 75
 					Width: 170
 					Height: 20

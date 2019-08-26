@@ -30,6 +30,7 @@ namespace OpenRA.Mods.Common.Scripting
 			}
 			catch (FileNotFoundException)
 			{
+				Console.WriteLine("File not found");
 				Ui.CloseWindow();
 				onComplete();
 				return;

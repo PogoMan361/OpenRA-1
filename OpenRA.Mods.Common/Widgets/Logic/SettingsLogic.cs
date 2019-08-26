@@ -15,6 +15,7 @@ using System.Linq;
 using OpenRA.Graphics;
 using OpenRA.Primitives;
 using OpenRA.Widgets;
+using OpenRA.Mods.Common.Scripting;
 
 namespace OpenRA.Mods.Common.Widgets.Logic
 {
@@ -81,8 +82,8 @@ namespace OpenRA.Mods.Common.Widgets.Logic
 
 				Action closeAndExit = () => { Ui.CloseWindow(); onExit(); };
 				if (current.Sound.Device != OriginalSoundDevice ||
-				    current.Graphics.Mode != OriginalGraphicsMode ||
-				    current.Graphics.WindowedSize != OriginalGraphicsWindowedSize ||
+					current.Graphics.Mode != OriginalGraphicsMode ||
+					current.Graphics.WindowedSize != OriginalGraphicsWindowedSize ||
 					current.Graphics.FullscreenSize != OriginalGraphicsFullscreenSize ||
 					current.Server.DiscoverNatDevices != OriginalServerDiscoverNatDevices ||
 					current.Graphics.ScaleUI != OriginalScaleUI)
@@ -102,7 +103,9 @@ namespace OpenRA.Mods.Common.Widgets.Logic
 						cancelText: "Restart Later");
 				}
 				else
+				{
 					closeAndExit();
+				}
 			};
 
 			panelContainer.Get<ButtonWidget>("RESET_BUTTON").OnClick = () =>
@@ -237,9 +240,9 @@ namespace OpenRA.Mods.Common.Widgets.Logic
 			var cursorDoubleIsChecked = cursorDoubleCheckbox.IsChecked;
 			cursorDoubleCheckbox.IsChecked = () => !cursorDoubleCheckbox.IsDisabled() && cursorDoubleIsChecked();
 
-			var uiScaleCheckbox = panel.Get<CheckboxWidget>("SCALE_UI_CHECKBOX");
-			var uiScaleIsChecked = uiScaleCheckbox.IsChecked;
-			uiScaleCheckbox.IsChecked = () => ds.ScaleUI;
+//			var uiScaleCheckbox = panel.Get<CheckboxWidget>("SCALE_UI_CHECKBOX");
+//			var uiScaleIsChecked = uiScaleCheckbox.IsChecked;
+//			uiScaleCheckbox.IsChecked = () => ds.ScaleUI;
 
 			panel.Get("WINDOW_RESOLUTION").IsVisible = () => ds.Mode == WindowMode.Windowed;
 			var windowWidth = panel.Get<TextFieldWidget>("WINDOW_WIDTH");
