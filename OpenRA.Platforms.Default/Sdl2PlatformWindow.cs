@@ -140,10 +140,8 @@ namespace OpenRA.Platforms.Default
 				}
 
 				surfaceSize = windowSize;
-				if (Game.Settings.Graphics.ScaleUI)
-					windowScale = 1.33f;
-				else
-					windowScale = 1.0f;
+				windowScale = Game.Settings.Graphics.ScaleUIf;
+//					windowScale = 1.0;
 
 
 				if (windowScale == 1) // no ScaleUI set

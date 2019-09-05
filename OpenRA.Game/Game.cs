@@ -27,7 +27,7 @@ using OpenRA.Widgets;
 
 namespace OpenRA
 {
-	public static class Game
+	public class Game
 	{
 		public const int NetTickScale = 3; // 120 ms net tick for 40 ms local tick
 		public const int Timestep = 40;
@@ -40,7 +40,7 @@ namespace OpenRA
 		public static Settings Settings;
 		public static ICursor Cursor;
 		public static bool HideCursor;
-		static WorldRenderer worldRenderer;
+		public static WorldRenderer worldRenderer;
 
 		internal static OrderManager OrderManager;
 		static Server.Server server;
@@ -473,7 +473,6 @@ namespace OpenRA
 
 			ChromeMetrics.TryGet("ChatMessageColor", out chatMessageColor);
 			ChromeMetrics.TryGet("SystemMessageColor", out systemMessageColor);
-
 			ModData.LoadScreen.StartGame(args);
 		}
 
@@ -626,7 +625,7 @@ namespace OpenRA
 
 		static void LogicTick()
 		{
-			delayedActions.PerformActions(RunTime);
+			PerformDelayedActions();
 
 			if (OrderManager.Connection.ConnectionState != lastConnectionState)
 			{
@@ -637,6 +636,11 @@ namespace OpenRA
 			InnerLogicTick(OrderManager);
 			if (worldRenderer != null && OrderManager.World != worldRenderer.World)
 				InnerLogicTick(worldRenderer.World.OrderManager);
+		}
+
+		public static void PerformDelayedActions()
+		{
+			delayedActions.PerformActions(RunTime);
 		}
 
 		public static void TakeScreenshot()

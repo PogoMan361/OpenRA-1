@@ -128,7 +128,7 @@ Container@SETTINGS_PANEL:
 							X: 60
 							Y: 75
 							Width: PARENT_RIGHT
-							Height: 20
+							Height: 25
 							Font: Regular
 							Align: Left
 							Text: UI Scale
@@ -136,7 +136,7 @@ Container@SETTINGS_PANEL:
 							X: 120
 							Y: 75
 							Width: 150
-							Height: 20
+							Height: 25
 							Font: Regular
 							Text: Normal
 						Checkbox@HARDWARECURSORS_CHECKBOX:

@@ -143,7 +143,7 @@ namespace OpenRA
 		[Desc("Screen resolution in windowed mode.")]
 		public int2 WindowedSize = new int2(1024, 768);
 
-		public bool ScaleUI = true;
+		public float ScaleUIf = 1.0f;
 
 		public bool HardwareCursors = true;
 
@@ -214,6 +214,7 @@ namespace OpenRA
 		public StatusBarsType StatusBars = StatusBarsType.Standard;
 		public TargetLinesType TargetLines = TargetLinesType.Manual;
 		public bool UsePlayerStanceColors = false;
+		public bool FogOn = false;
 
 		public bool AllowDownloading = true;
 

@@ -43,7 +43,7 @@ Container@MENU_BACKGROUND:
 		Container@MENUS:
 			X: (WINDOW_RIGHT - WIDTH) / 2
 			Y: WINDOW_BOTTOM - 33 - HEIGHT - 10
-			Width: 1040
+			Width: 890
 			Height: 35
 			Children:
 				Container@MAIN_MENU:

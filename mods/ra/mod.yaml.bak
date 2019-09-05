@@ -1,6 +1,6 @@
 Metadata:
 	Title: Red Alert
-	Version: YURI_20190825
+	Version: {YURI}
 	Website: https://www.openra.net
 	WebIcon32: https://www.openra.net/images/icons/ra_32x32.png
 
@@ -36,7 +36,7 @@ Packages:
 
 MapFolders:
 	ra|maps: System
-	~^maps/ra/YURI_20190825: User
+	~^maps/ra/{DEV_VERSION}: User
 
 Rules:
 	ra|rules/misc.yaml

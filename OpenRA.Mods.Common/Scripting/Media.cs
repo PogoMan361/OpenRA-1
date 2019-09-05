@@ -30,7 +30,6 @@ namespace OpenRA.Mods.Common.Scripting
 			}
 			catch (FileNotFoundException)
 			{
-				Console.WriteLine("File not found");
 				Ui.CloseWindow();
 				onComplete();
 				return;
@@ -53,7 +52,6 @@ namespace OpenRA.Mods.Common.Scripting
 			{
 				if (music)
 					Game.Sound.PlayMusic();
-
 				Ui.CloseWindow();
 				Game.Sound.SoundVolumeModifier = oldModifier;
 				w.SetPauseState(false);

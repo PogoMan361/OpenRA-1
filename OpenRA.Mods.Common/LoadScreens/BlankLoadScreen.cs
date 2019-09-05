@@ -10,12 +10,14 @@
 #endregion
 
 using System;
+using System.Threading;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using OpenRA.FileFormats;
 using OpenRA.Mods.Common.Widgets.Logic;
 using OpenRA.Widgets;
+using OpenRA.Mods.Common.Scripting;
 
 namespace OpenRA.Mods.Common.LoadScreens
 {
@@ -97,8 +99,8 @@ namespace OpenRA.Mods.Common.LoadScreens
 
 				return;
 			}
-
 			Game.LoadShellMap();
+//			Media.PlayFMVFullscreen(Game.worldRenderer.World, "openings.vqa", () => { });
 			Game.Settings.Save();
 		}
 
@@ -123,7 +125,9 @@ namespace OpenRA.Mods.Common.LoadScreens
 				.All(p => p.Value.TestFiles.All(f => File.Exists(Platform.ResolvePath(f))));
 
 			if (contentInstalled)
+			{
 				return true;
+			}
 
 			Game.InitializeMod(content.ContentInstallerMod, new Arguments(new[] { "Content.Mod=" + modData.Manifest.Id }));
 			return false;

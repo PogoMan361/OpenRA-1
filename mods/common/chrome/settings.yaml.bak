@@ -138,15 +138,23 @@ Background@SETTINGS_PANEL:
 							Height: 25
 							MaxLength: 5
 							Type: Integer
-				Checkbox@SCALE_UI_CHECKBOX:
-					X: 15
+				Label@UI_DESC:
+					X: 60
 					Y: 75
-					Width: 170
-					Height: 20
+					Width: PARENT_RIGHT
+					Height: 25
 					Font: Regular
-					Text: Upscale Interface
+					Align: Left
+					Text: UI Scale
+				DropDownButton@UISCALE_DROPDOWN:
+					X: 120
+					Y: 75
+					Width: 150
+					Height: 25
+					Font: Regular
+					Text: Normal
 				Checkbox@HARDWARECURSORS_CHECKBOX:
-					X: 310
+					X: 340
 					Y: 75
 					Width: 200
 					Height: 20

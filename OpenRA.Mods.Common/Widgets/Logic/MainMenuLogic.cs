@@ -19,6 +19,7 @@ using System.Linq;
 using System.Net;
 using OpenRA.Primitives;
 using OpenRA.Widgets;
+using OpenRA.Mods.Common.Scripting;
 
 namespace OpenRA.Mods.Common.Widgets.Logic
 {
@@ -107,7 +108,9 @@ namespace OpenRA.Mods.Common.Widgets.Logic
 
 			mainMenu.Get<ButtonWidget>("EXTRAS_BUTTON").OnClick = () => SwitchMenu(MenuType.Extras);
 
+			mainMenu.Get<ButtonWidget>("INTRO_BUTTON").OnClick = () => Media.PlayFMVFullscreen(Game.worldRenderer.World, "openings.vqa", () => { });
 			mainMenu.Get<ButtonWidget>("QUIT_BUTTON").OnClick = Game.Exit;
+
 
 			// Singleplayer menu
 			var singleplayerMenu = widget.Get("SINGLEPLAYER_MENU");

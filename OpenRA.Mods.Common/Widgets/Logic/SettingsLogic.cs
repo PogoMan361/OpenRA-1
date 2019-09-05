@@ -15,7 +15,6 @@ using System.Linq;
 using OpenRA.Graphics;
 using OpenRA.Primitives;
 using OpenRA.Widgets;
-using OpenRA.Mods.Common.Scripting;
 
 namespace OpenRA.Mods.Common.Widgets.Logic
 {
@@ -28,7 +27,7 @@ namespace OpenRA.Mods.Common.Widgets.Logic
 		static readonly int2 OriginalGraphicsWindowedSize;
 		static readonly int2 OriginalGraphicsFullscreenSize;
 		static readonly bool OriginalServerDiscoverNatDevices;
-		static readonly bool OriginalScaleUI;
+		static readonly float OriginalScaleUIf;
 
 		readonly Dictionary<PanelType, Action> leavePanelActions = new Dictionary<PanelType, Action>();
 		readonly Dictionary<PanelType, Action> resetPanelActions = new Dictionary<PanelType, Action>();
@@ -55,7 +54,7 @@ namespace OpenRA.Mods.Common.Widgets.Logic
 			OriginalGraphicsWindowedSize = original.Graphics.WindowedSize;
 			OriginalGraphicsFullscreenSize = original.Graphics.FullscreenSize;
 			OriginalServerDiscoverNatDevices = original.Server.DiscoverNatDevices;
-			OriginalScaleUI = original.Graphics.ScaleUI;
+			OriginalScaleUIf = original.Graphics.ScaleUIf;
 		}
 
 		[ObjectCreator.UseCtor]
@@ -86,7 +85,7 @@ namespace OpenRA.Mods.Common.Widgets.Logic
 					current.Graphics.WindowedSize != OriginalGraphicsWindowedSize ||
 					current.Graphics.FullscreenSize != OriginalGraphicsFullscreenSize ||
 					current.Server.DiscoverNatDevices != OriginalServerDiscoverNatDevices ||
-					current.Graphics.ScaleUI != OriginalScaleUI)
+					current.Graphics.ScaleUIf != OriginalScaleUIf)
 				{
 					Action restart = () =>
 					{
@@ -202,7 +201,6 @@ namespace OpenRA.Mods.Common.Widgets.Logic
 			BindCheckboxPref(panel, "CURSORDOUBLE_CHECKBOX", ds, "CursorDouble");
 			BindCheckboxPref(panel, "FRAME_LIMIT_CHECKBOX", ds, "CapFramerate");
 			BindCheckboxPref(panel, "PLAYER_STANCE_COLORS_CHECKBOX", gs, "UsePlayerStanceColors");
-			BindCheckboxPref(panel, "SCALE_UI_CHECKBOX", ds, "ScaleUI");
 			BindCheckboxPref(panel, "SCROLL_LIMIT_CHECKBOX", gs, "ViewportLimitScroll");
 
 			var languageDropDownButton = panel.Get<DropDownButtonWidget>("LANGUAGE_DROPDOWNBUTTON");
@@ -213,6 +211,10 @@ namespace OpenRA.Mods.Common.Widgets.Logic
 			windowModeDropdown.OnMouseDown = _ => ShowWindowModeDropdown(windowModeDropdown, ds);
 			windowModeDropdown.GetText = () => ds.Mode == WindowMode.Windowed ?
 				"Windowed" : ds.Mode == WindowMode.Fullscreen ? "Fullscreen (Legacy)" : "Fullscreen";
+
+			var windowUIScaleDropdown = panel.Get<DropDownButtonWidget>("UISCALE_DROPDOWN");
+			windowUIScaleDropdown.OnMouseDown = _ => ShowWindowUIScaleDropdown(windowUIScaleDropdown, ds);
+			windowUIScaleDropdown.GetText = () => ds.ScaleUIf > 1.2f ? "Largest" : ds.ScaleUIf > 1.0f ? "Larger" : "Normal";
 
 			var statusBarsDropDown = panel.Get<DropDownButtonWidget>("STATUS_BAR_DROPDOWN");
 			statusBarsDropDown.OnMouseDown = _ => ShowStatusBarsDropdown(statusBarsDropDown, gs);
@@ -232,17 +234,12 @@ namespace OpenRA.Mods.Common.Widgets.Logic
 				pixelDoubleOnClick();
 				worldRenderer.Viewport.Zoom = ds.PixelDouble ? 2 : 1;
 			};
-
 			// Cursor doubling is only supported with software cursors and when pixel doubling is enabled
 			var cursorDoubleCheckbox = panel.Get<CheckboxWidget>("CURSORDOUBLE_CHECKBOX");
 			cursorDoubleCheckbox.IsDisabled = () => !ds.PixelDouble || Game.Cursor is HardwareCursor;
 
 			var cursorDoubleIsChecked = cursorDoubleCheckbox.IsChecked;
 			cursorDoubleCheckbox.IsChecked = () => !cursorDoubleCheckbox.IsDisabled() && cursorDoubleIsChecked();
-
-//			var uiScaleCheckbox = panel.Get<CheckboxWidget>("SCALE_UI_CHECKBOX");
-//			var uiScaleIsChecked = uiScaleCheckbox.IsChecked;
-//			uiScaleCheckbox.IsChecked = () => ds.ScaleUI;
 
 			panel.Get("WINDOW_RESOLUTION").IsVisible = () => ds.Mode == WindowMode.Windowed;
 			var windowWidth = panel.Get<TextFieldWidget>("WINDOW_WIDTH");
@@ -251,9 +248,10 @@ namespace OpenRA.Mods.Common.Widgets.Logic
 			var windowHeight = panel.Get<TextFieldWidget>("WINDOW_HEIGHT");
 			windowHeight.Text = ds.WindowedSize.Y.ToString();
 
+			var escPressed = false;
 			var frameLimitTextfield = panel.Get<TextFieldWidget>("FRAME_LIMIT_TEXTFIELD");
 			frameLimitTextfield.Text = ds.MaxFramerate.ToString();
-			var escPressed = false;
+			escPressed = false;
 			frameLimitTextfield.OnLoseFocus = () =>
 			{
 				if (escPressed)
@@ -326,6 +324,7 @@ namespace OpenRA.Mods.Common.Widgets.Logic
 				Exts.TryParseIntegerInvariant(windowWidth.Text, out x);
 				Exts.TryParseIntegerInvariant(windowHeight.Text, out y);
 				ds.WindowedSize = new int2(x, y);
+
 				frameLimitTextfield.YieldKeyboardFocus();
 				nameTextfield.YieldKeyboardFocus();
 			};
@@ -687,6 +686,26 @@ namespace OpenRA.Mods.Common.Widgets.Logic
 					() => s.Mode == options[o],
 					() => s.Mode = options[o]);
 
+				item.Get<LabelWidget>("LABEL").GetText = () => o;
+				return item;
+			};
+
+			dropdown.ShowDropDown("LABEL_DROPDOWN_TEMPLATE", 500, options.Keys, setupItem);
+		}
+		static void ShowWindowUIScaleDropdown(DropDownButtonWidget dropdown, GraphicSettings s)
+		{
+			var options = new Dictionary<string, float>()
+			{
+				{ "Normal", 1.0f },
+				{ "Larger", 1.2f },
+				{ "Largest", 1.4f },
+			};
+
+			Func<string, ScrollItemWidget, ScrollItemWidget> setupItem = (o, itemTemplate) =>
+			{
+				var item = ScrollItemWidget.Setup(itemTemplate,
+					() => Game.Settings.Graphics.ScaleUIf == options[o],
+					() => Game.Settings.Graphics.ScaleUIf = options[o]);
 				item.Get<LabelWidget>("LABEL").GetText = () => o;
 				return item;
 			};

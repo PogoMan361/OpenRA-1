@@ -26,7 +26,7 @@ namespace OpenRA.Traits
 		public readonly string FogCheckboxDescription = "Line of sight is required to view enemy forces";
 
 		[Desc("Default value of the fog checkbox in the lobby.")]
-		public readonly bool FogCheckboxEnabled = true;
+		public readonly bool FogCheckboxEnabled = Game.Settings.Game.FogOn;
 
 		[Desc("Prevent the fog enabled state from being changed in the lobby.")]
 		public readonly bool FogCheckboxLocked = false;
@@ -150,7 +150,6 @@ namespace OpenRA.Traits
 		{
 			var gs = self.World.LobbyInfo.GlobalSettings;
 			fogEnabled = gs.OptionOrDefault("fog", info.FogCheckboxEnabled);
-
 			ExploreMapEnabled = gs.OptionOrDefault("explored", info.ExploredMapCheckboxEnabled);
 			if (ExploreMapEnabled)
 				self.World.AddFrameEndTask(w => ExploreAll());
